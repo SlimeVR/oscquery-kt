@@ -53,7 +53,11 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val jvmMain by getting
+        val jvmMain by getting {
+            dependencies {
+                implementation("org.jmdns:jmdns:3.5.8")
+            }
+        }
         val jvmTest by getting
         val jsMain by getting
         val jsTest by getting
