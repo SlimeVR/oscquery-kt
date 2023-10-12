@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.android.library") version "7.4.2"
 }
 
 group = "dev.slimevr"
@@ -13,22 +14,13 @@ repositories {
 kotlin {
     jvm {
         jvmToolchain(17)
-        withJava()
-        testRuns.named("test") {
-            executionTask.configure {
-                useJUnitPlatform()
-            }
-        }
     }
     js {
-        browser {
-            commonWebpackConfig {
-                cssSupport {
-                    enabled.set(true)
-                }
-            }
-        }
+        nodejs()
     }
+    ios()
+    androidTarget()
+
     val hostOs = System.getProperty("os.name")
     val isArm64 = System.getProperty("os.arch") == "aarch64"
     val isMingwX64 = hostOs.startsWith("Windows")
@@ -61,6 +53,8 @@ kotlin {
         val jvmTest by getting
         val jsMain by getting
         val jsTest by getting
+        val androidMain by getting
+        val androidUnitTest by getting
         val nativeMain by getting
         val nativeTest by getting
     }
