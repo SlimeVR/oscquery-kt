@@ -14,7 +14,14 @@ abstract class IOSCQueryServer(
         return format.encodeToString(rootNode.getNodeWithPath(path) ?: Unit)
     }
 
-    abstract fun init()
+    protected abstract fun initHttp()
+
+    fun init() {
+        initHttp()
+
+        // Announce OSCQuery service
+        service.createService("_oscjson._tcp.", "oscquery", port, address)
+    }
 }
 
 expect class OSCQueryServer(address: String = "127.0.0.1", port: UShort) : IOSCQueryServer
