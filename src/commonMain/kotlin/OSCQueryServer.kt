@@ -3,7 +3,7 @@ import kotlinx.serialization.encodeToString
 abstract class IOSCQueryServer(
     val address: String = "127.0.0.1",
     val port: UShort
-) {
+) : AutoCloseable {
     val rootNode = OSCQueryRootNode()
 
     val service = OSCQueryService()
