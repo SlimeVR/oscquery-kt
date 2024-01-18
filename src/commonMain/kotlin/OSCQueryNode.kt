@@ -21,7 +21,7 @@ val module = SerializersModule {
 
 val format = Json { serializersModule = module }
 
-class OSCQueryRootNode() : OSCQueryNode("/", null, mutableMapOf()) {
+class OSCQueryRootNode : OSCQueryNode("/", null, mutableMapOf()) {
     private val contentLookup: MutableMap<String, OSCQueryNode> = mutableMapOf(
         "/" to this,
     )
