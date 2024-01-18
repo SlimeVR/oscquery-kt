@@ -45,7 +45,7 @@ actual class OSCQueryServer actual constructor(
 
         routing {
             get("/{...}") {
-                val path = call.parameters.getAll("path")?.joinToString("/") ?: "/"
+                val path = "/${call.parameters.getAll("path")?.joinToString("/") ?: ""}"
                 call.respondText(processPath(path), ContentType.Application.Json)
             }
         }
