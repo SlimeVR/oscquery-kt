@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
+    `maven-publish`
 //    id("com.android.library") version "7.4.2"
 }
 
@@ -60,5 +61,13 @@ kotlin {
 //        val androidUnitTest by getting
 //        val nativeMain by getting
 //        val nativeTest by getting
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            version = "1.0.0"
+        }
     }
 }

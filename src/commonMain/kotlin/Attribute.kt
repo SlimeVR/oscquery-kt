@@ -9,8 +9,8 @@ import kotlinx.serialization.encoding.Encoder
 object AttributeAsIntSerializer : KSerializer<Attribute> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Attribute", PrimitiveKind.INT)
 
-    override fun serialize(encoder: Encoder, attr: Attribute) {
-        encoder.encodeInt(attr.value)
+    override fun serialize(encoder: Encoder, value: Attribute) {
+        encoder.encodeInt(value.value)
     }
 
     override fun deserialize(decoder: Decoder): Attribute {
