@@ -37,8 +37,8 @@ abstract class IOSCQueryServer(
         initHttp(oscQueryPort, oscQueryAddress)
 
         // Announce OSCQuery and OSC service
-        service.createService("_oscjson._tcp.", "oscquery", oscQueryPort, oscQueryAddress)
-        service.createService("_osc._${transport.name.lowercase()}.", "osc", oscPort, oscAddress)
+        service.createService("_oscjson._tcp.", name, oscQueryPort, oscQueryAddress)
+        service.createService("_osc._${transport.name.lowercase()}.", name, oscPort, oscAddress)
     }
 }
 
