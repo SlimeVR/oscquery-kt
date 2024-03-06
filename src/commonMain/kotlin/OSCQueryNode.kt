@@ -1,27 +1,26 @@
 import kotlinx.serialization.*
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
-import kotlinx.serialization.modules.subclass
 import kotlin.math.max
 
 val module = SerializersModule {
-    polymorphic(List::class) {
-        subclass(ListSerializer(PolymorphicSerializer(Any::class)))
-    }
-
-    polymorphic(Any::class) {
-        subclass(Double::class)
-        subclass(Int::class)
-        subclass(String::class)
-        subclass(Unit::class)
-    }
+//    polymorphic(List::class) {
+//        subclass(ListSerializer(PolymorphicSerializer(Any::class)))
+//    }
+//
+//    polymorphic(Any::class) {
+//        subclass(Double::class)
+//        subclass(Int::class)
+//        subclass(String::class)
+//        subclass(Unit::class)
+//    }
 }
 
 val format = Json { serializersModule = module }
 
+@Serializable
 class OSCQueryRootNode : OSCQueryNode("/", null, mutableMapOf()) {
+    @Transient
     private val contentLookup: MutableMap<String, OSCQueryNode> = mutableMapOf(
         "/" to this,
     )
@@ -32,7 +31,7 @@ class OSCQueryRootNode : OSCQueryNode("/", null, mutableMapOf()) {
 
     fun addNode(node: OSCQueryNode) {
         val parent = getNodeWithPath(node.parentPath) ?: run {
-            val parent = OSCQueryNodeImpl(node.parentPath)
+            val parent = OSCQueryNode(node.parentPath)
             addNode(parent)
             parent
         }
@@ -68,19 +67,20 @@ class OSCQueryRootNode : OSCQueryNode("/", null, mutableMapOf()) {
     }
 }
 
-class OSCQueryNodeImpl(fullPath: String, type: String? = null, contents: MutableMap<String, OSCQueryNode>? = null) :
-    OSCQueryNode(
-        fullPath, type,
-        contents
-    )
+@Serializable
+open class OSCQueryNode(
+    @SerialName("FULL_PATH") override val fullPath: String,
+    @SerialName("TYPE") override val type: String? = null,
+    @SerialName("CONTENTS") var contents: MutableMap<String, OSCQueryNode>? = null
+) : BaseOSCQueryNode()
 
 @Serializable
-sealed class OSCQueryNode(
-    @SerialName("FULL_PATH") val fullPath: String,
-    @SerialName("TYPE") val type: String?,
-    @SerialName("CONTENTS") var contents: MutableMap<String, OSCQueryNode>?,
+sealed class BaseOSCQueryNode(
 //    @SerialName("VALUE") val value: List<@Polymorphic Any>?,
 ) {
+    abstract val fullPath: String
+    abstract val type: String?
+
     val parentPath: String
         get() {
             val length = max(1, fullPath.lastIndexOf('/'))
@@ -89,4 +89,11 @@ sealed class OSCQueryNode(
 
     val name: String
         get() = fullPath.substring(1 + fullPath.lastIndexOf('/'))
+
+    override fun equals(other: Any?): Boolean {
+        if (other is OSCQueryNode) {
+            return fullPath == other.fullPath
+        }
+        return super.equals(other)
+    }
 }

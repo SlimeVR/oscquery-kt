@@ -3,7 +3,7 @@ import kotlinx.serialization.encodeToString
 expect fun randomFreePort(): UShort
 
 abstract class IOSCQueryServer(
-    name: String,
+    val name: String,
     val transport: OscTransport,
     val oscPort: UShort,
     val oscAddress: String = "127.0.0.1",
@@ -25,10 +25,9 @@ abstract class IOSCQueryServer(
 
     )
 
-    var initialized = false
-
     fun processPath(path: String): String {
-        return format.encodeToString(rootNode.getNodeWithPath(path) ?: Unit)
+        println(rootNode.getNodeWithPath(path))
+        return format.encodeToString(rootNode.getNodeWithPath(path))
     }
 
     protected abstract fun initHttp(port: UShort, address: String)

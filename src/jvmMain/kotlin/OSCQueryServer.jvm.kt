@@ -5,9 +5,9 @@ import io.ktor.server.netty.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.encodeToString
 import java.io.IOException
 import java.net.ServerSocket
-import kotlin.concurrent.thread
 
 
 actual fun randomFreePort(): UShort {
@@ -44,8 +44,13 @@ actual class OSCQueryServer actual constructor(
         }
 
         routing {
-            get("/{...}") {
+            get("/{path...}") {
+                if (call.request.queryParameters["HOST_INFO"] != null) {
+                    call.respondText(format.encodeToString(hostInfo), ContentType.Application.Json)
+                    return@get
+                }
                 val path = "/${call.parameters.getAll("path")?.joinToString("/") ?: ""}"
+                println(processPath(path))
                 call.respondText(processPath(path), ContentType.Application.Json)
             }
         }
