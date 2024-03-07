@@ -1,5 +1,6 @@
 import java.net.InetAddress
 import java.net.InetSocketAddress
+import java.util.concurrent.atomic.AtomicLong
 import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo as JmDNSServiceInfo
@@ -12,9 +13,13 @@ actual class OSCQueryService : AutoCloseable {
         jmDNS.registerService(service)
     }
 
-    actual fun addServiceListener(serviceName: String, onServiceResolved: (ServiceInfo) -> Unit) {
-        // TODO: Add a Map for the service listeners so they are removable
-        jmDNS.addServiceListener(serviceName, object : ServiceListener {
+    private val counter = AtomicLong(0)
+    private val serviceListeners = mutableMapOf<Long, Pair<String, ServiceListener>>()
+    actual fun addServiceListener(
+        serviceName: String,
+        onServiceResolved: (ServiceInfo) -> Unit
+    ): ServiceListenerHandle {
+        val listener = object : ServiceListener {
             override fun serviceAdded(event: ServiceEvent?) {
                 TODO("Not yet implemented")
             }
@@ -26,7 +31,18 @@ actual class OSCQueryService : AutoCloseable {
             override fun serviceResolved(event: ServiceEvent?) {
                 onServiceResolved(ServiceInfo(event?.info ?: return))
             }
-        })
+        }
+        jmDNS.addServiceListener(serviceName, listener)
+
+        val handle = counter.getAndIncrement()
+        serviceListeners[handle] = serviceName to listener
+        return ServiceListenerHandle(handle)
+    }
+
+    actual fun removeServiceListener(handle: ServiceListenerHandle): Boolean {
+        val (serviceName, listener) = serviceListeners.remove(handle.id) ?: return false
+        jmDNS.removeServiceListener(serviceName, listener)
+        return true
     }
 
     override fun close() {
