@@ -1,7 +1,12 @@
 expect class OSCQueryService() : AutoCloseable {
     fun createService(serviceName: String, name: String, port: UShort, text: String)
 
-    fun addServiceListener(serviceName: String, onServiceResolved: (ServiceInfo) -> Unit): ServiceListenerHandle
+    fun addServiceListener(
+        serviceName: String,
+        onServiceResolved: (ServiceInfo) -> Unit,
+        onServiceAdded: (ServiceInfo) -> Unit = {},
+        onServiceRemoved: (type: String, name: String) -> Unit = { _: String, _: String -> },
+    ): ServiceListenerHandle
 
     fun removeServiceListener(handle: ServiceListenerHandle): Boolean
 }

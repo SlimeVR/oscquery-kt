@@ -17,15 +17,19 @@ actual class OSCQueryService : AutoCloseable {
     private val serviceListeners = mutableMapOf<Long, Pair<String, ServiceListener>>()
     actual fun addServiceListener(
         serviceName: String,
-        onServiceResolved: (ServiceInfo) -> Unit
+        onServiceResolved: (ServiceInfo) -> Unit,
+        onServiceAdded: (ServiceInfo) -> Unit,
+        onServiceRemoved: (type: String, name: String) -> Unit,
     ): ServiceListenerHandle {
         val listener = object : ServiceListener {
             override fun serviceAdded(event: ServiceEvent?) {
-                TODO("Not yet implemented")
+                jmDNS.getServiceInfo(event?.type ?: return, event.name)?.let {
+                    onServiceAdded(ServiceInfo(it))
+                }
             }
 
             override fun serviceRemoved(event: ServiceEvent?) {
-                TODO("Not yet implemented")
+                onServiceRemoved(event?.type ?: return, event.name)
             }
 
             override fun serviceResolved(event: ServiceEvent?) {
