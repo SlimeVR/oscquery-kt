@@ -24,11 +24,10 @@ actual fun randomFreePort(): UShort {
 actual class OSCQueryServer actual constructor(
     name: String,
     transport: OscTransport,
+    address: String,
     oscPort: UShort,
-    oscAddress: String,
     oscQueryPort: UShort,
-    oscQueryAddress: String
-) : IOSCQueryServer(name, transport, oscPort, oscAddress, oscQueryPort, oscQueryAddress) {
+) : IOSCQueryServer(name, transport, address, oscPort, oscQueryPort) {
 
     private var engine: ApplicationEngine? = null
 

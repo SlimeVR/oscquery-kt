@@ -1,4 +1,4 @@
-expect class OSCQueryService() : AutoCloseable {
+expect class OSCQueryService(address: String) : AutoCloseable {
     fun createService(serviceName: String, name: String, port: UShort, text: String)
 
     fun addServiceListener(
