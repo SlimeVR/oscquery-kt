@@ -10,6 +10,7 @@ version = "0.1.0"
 
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
 }
 
 kotlin {
@@ -48,7 +49,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("org.jmdns:jmdns:3.5.8")
+                implementation("com.github.jmdns:jmdns:0e40954468")
                 implementation("io.ktor:ktor-server-core:2.3.7")
                 implementation("io.ktor:ktor-server-netty:2.3.7")
                 implementation("io.ktor:ktor-server-default-headers:2.3.7")

@@ -3,7 +3,7 @@ expect class OSCQueryService(address: String) : AutoCloseable {
 
     fun addServiceListener(
         serviceName: String,
-        onServiceResolved: (ServiceInfo) -> Unit,
+        onServiceResolved: (ServiceInfo) -> Unit = {},
         onServiceAdded: (ServiceInfo) -> Unit = {},
         onServiceRemoved: (type: String, name: String) -> Unit = { _: String, _: String -> },
     ): ServiceListenerHandle
