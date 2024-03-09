@@ -9,7 +9,7 @@ import javax.jmdns.ServiceListener
 actual class OSCQueryService actual constructor(address: String) : AutoCloseable {
     private val jmDNS: JmDNS = JmDNS.create(InetAddress.getByName(address))
     actual fun createService(serviceName: String, name: String, port: UShort, text: String) {
-        val service = JmDNSServiceInfo.create(serviceName, name, port.toInt(), text)
+        val service = JmDNSServiceInfo.create(serviceName, name, port.toInt(), "help")
         jmDNS.registerService(service)
     }
 
