@@ -6,7 +6,7 @@ class OSCQueryServerTest {
 //        val server = OSCQueryServer(
 //            name = "test",
 //            transport = OscTransport.UDP,
-//            address = "192.168.1.xx",
+//            address = "127.0.0.1",
 //            oscPort = 1234u,
 //        )
 //

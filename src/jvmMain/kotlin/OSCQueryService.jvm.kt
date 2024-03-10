@@ -1,12 +1,13 @@
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
+import javax.jmdns.JmDNS
 import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo as JmDNSServiceInfo
 import javax.jmdns.ServiceListener
 
-actual class OSCQueryService actual constructor(address: String) : AutoCloseable {
-    private val jmDNS: JmmDNS = JmmDNS.Factory.getInstance()
+actual class OSCQueryService actual constructor(address: String, name: String) : AutoCloseable {
+    private val jmDNS: JmDNS = JmDNS.create(InetAddress.getByName(address), name)
     actual fun createService(serviceName: String, name: String, port: UShort, text: String) {
         val service = JmDNSServiceInfo.create(serviceName, name, port.toInt(), "help")
         jmDNS.registerService(service)
@@ -22,7 +23,7 @@ actual class OSCQueryService actual constructor(address: String) : AutoCloseable
     ): ServiceListenerHandle {
         val listener = object : ServiceListener {
             override fun serviceAdded(event: ServiceEvent?) {
-                jmDNS.getServiceInfos(event?.type ?: return, event.name)?.forEach {
+                jmDNS.getServiceInfo(event?.type ?: return, event.name)?.let {
                     onServiceAdded(ServiceInfo(it))
                 }
             }
