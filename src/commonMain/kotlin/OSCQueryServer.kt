@@ -25,7 +25,6 @@ abstract class IOSCQueryServer(
     )
 
     fun processPath(path: String): String {
-        println(rootNode.getNodeWithPath(path))
         return format.encodeToString(rootNode.getNodeWithPath(path))
     }
 

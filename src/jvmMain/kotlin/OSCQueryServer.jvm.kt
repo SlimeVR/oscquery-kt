@@ -49,7 +49,6 @@ actual class OSCQueryServer actual constructor(
                     return@get
                 }
                 val path = "/${call.parameters.getAll("path")?.joinToString("/") ?: ""}"
-                println(processPath(path))
                 call.respondText(processPath(path), ContentType.Application.Json)
             }
         }
