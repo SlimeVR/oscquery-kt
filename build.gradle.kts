@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
+    kotlin("multiplatform") version "1.9.23"
+    kotlin("plugin.serialization") version "1.9.23"
     `maven-publish`
 //    id("com.android.library") version "7.4.2"
 }
@@ -39,7 +39,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
         val commonTest by getting {
@@ -50,9 +50,9 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation("com.github.jmdns:jmdns:0e40954468")
-                implementation("io.ktor:ktor-server-core:2.3.7")
-                implementation("io.ktor:ktor-server-netty:2.3.7")
-                implementation("io.ktor:ktor-server-default-headers:2.3.7")
+                implementation("io.ktor:ktor-server-core:2.3.9")
+                implementation("io.ktor:ktor-server-netty:2.3.9")
+                implementation("io.ktor:ktor-server-default-headers:2.3.9")
             }
         }
         val jvmTest by getting
@@ -67,8 +67,6 @@ kotlin {
 
 publishing {
     repositories {
-        maven {
-            version = "1.0.0"
-        }
+        maven {}
     }
 }
