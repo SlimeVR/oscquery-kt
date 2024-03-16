@@ -1,19 +1,29 @@
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
 import javax.jmdns.JmDNS
-import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceInfo as JmDNSServiceInfo
 import javax.jmdns.ServiceListener
 
 actual class OSCQueryService actual constructor(address: String, name: String) : AutoCloseable {
     private val jmDNS: JmDNS = JmDNS.create(InetAddress.getByName(address), name)
-    actual fun createService(serviceName: String, name: String, port: UShort, text: String) {
+
+    private val serviceCounter = AtomicLong(0)
+    private val serviceHandles = mutableMapOf<Long, JmDNSServiceInfo>()
+    actual fun createService(serviceName: String, name: String, port: UShort, text: String): ServiceHandle {
         val service = JmDNSServiceInfo.create(serviceName, name, port.toInt(), "help")
         jmDNS.registerService(service)
+        val handle = serviceCounter.getAndIncrement()
+        serviceHandles[handle] = service
+        return ServiceHandle(handle)
     }
 
-    private val counter = AtomicLong(0)
+    actual fun removeService(handle: ServiceHandle) {
+        val service = serviceHandles.remove(handle.id) ?: return
+        jmDNS.unregisterService(service)
+    }
+
+    private val listenerCounter = AtomicLong(0)
     private val serviceListeners = mutableMapOf<Long, Pair<String, ServiceListener>>()
     actual fun addServiceListener(
         serviceName: String,
@@ -38,7 +48,7 @@ actual class OSCQueryService actual constructor(address: String, name: String) :
         }
         jmDNS.addServiceListener(serviceName, listener)
 
-        val handle = counter.getAndIncrement()
+        val handle = listenerCounter.getAndIncrement()
         serviceListeners[handle] = serviceName to listener
         return ServiceListenerHandle(handle)
     }

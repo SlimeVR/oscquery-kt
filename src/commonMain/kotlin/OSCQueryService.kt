@@ -1,5 +1,7 @@
 expect class OSCQueryService(address: String, name: String) : AutoCloseable {
-    fun createService(serviceName: String, name: String, port: UShort, text: String)
+    fun createService(serviceName: String, name: String, port: UShort, text: String): ServiceHandle
+
+    fun removeService(handle: ServiceHandle)
 
     fun addServiceListener(
         serviceName: String,
@@ -13,6 +15,9 @@ expect class OSCQueryService(address: String, name: String) : AutoCloseable {
 
 @JvmInline
 value class ServiceListenerHandle(val id: Long)
+
+@JvmInline
+value class ServiceHandle(val id: Long)
 
 expect class IpAddress {
     fun getAddress(): ByteArray
