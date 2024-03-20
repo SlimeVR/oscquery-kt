@@ -13,8 +13,12 @@ class OSCQueryServerTest {
 //        val grandChild = OSCQueryNode("/child/grandChild")
 //        server.rootNode.addNode(grandChild)
 //
+//        server.updateOscService(4321u)
+//
 //        server.init()
-//        println(server.oscQueryPort)
+//
+//        println("OSCQuery service = http://${server.address}:${server.oscQueryPort}")
+//
 //        Thread.sleep(5000000)
 //    }
 }

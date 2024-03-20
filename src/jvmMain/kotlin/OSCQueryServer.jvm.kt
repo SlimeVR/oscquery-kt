@@ -37,6 +37,12 @@ actual class OSCQueryServer actual constructor(
         }.start(wait = false)
     }
 
+    override fun updateOscService(port: UShort) {
+        oscPort = port
+        oscServiceHandle?.let { service.removeService(it) }
+        oscServiceHandle = service.createService("_osc._${transport.name.lowercase()}.local.", name, oscPort, "")
+    }
+
     private fun Application.main() {
         install(DefaultHeaders) {
             header("X-Engine", "Ktor")

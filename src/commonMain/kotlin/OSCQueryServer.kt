@@ -6,7 +6,7 @@ abstract class IOSCQueryServer(
     val name: String,
     val transport: OscTransport,
     val address: String,
-    val oscPort: UShort,
+    var oscPort: UShort,
     val oscQueryPort: UShort = randomFreePort(),
 ) : AutoCloseable {
     val rootNode = OSCQueryRootNode()
@@ -24,6 +24,8 @@ abstract class IOSCQueryServer(
 
     )
 
+    var oscServiceHandle: ServiceHandle? = null
+
     fun processPath(path: String): String {
         return format.encodeToString(rootNode.getNodeWithPath(path))
     }
@@ -35,8 +37,10 @@ abstract class IOSCQueryServer(
 
         // Announce OSCQuery and OSC service
         service.createService("_oscjson._tcp.local.", name, oscQueryPort, "")
-        service.createService("_osc._${transport.name.lowercase()}.local.", name, oscPort, "")
+        oscServiceHandle = service.createService("_osc._${transport.name.lowercase()}.local.", name, oscPort, "")
     }
+
+    abstract fun updateOscService(port: UShort)
 }
 
 expect class OSCQueryServer(
