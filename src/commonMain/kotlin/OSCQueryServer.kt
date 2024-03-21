@@ -13,16 +13,19 @@ abstract class IOSCQueryServer(
 
     val service = OSCQueryService(address, name)
 
-    val hostInfo = HostInfo(
-        name = name,
-        oscIp = address,
-        oscPort = oscPort,
-        oscTransport = transport,
-        websocketIp = null,
-        websocketPort = null,
-        extensions = mapOf(Extension.VALUE to true)
+    var hostInfo = getHostInfo()
 
-    )
+    fun getHostInfo (): HostInfo {
+        return HostInfo(
+            name = name,
+            oscIp = address,
+            oscPort = oscPort,
+            oscTransport = transport,
+            websocketIp = null,
+            websocketPort = null,
+            extensions = mapOf(Extension.VALUE to true)
+        )
+    }
 
     var oscServiceHandle: ServiceHandle? = null
 
@@ -37,7 +40,11 @@ abstract class IOSCQueryServer(
 
         // Announce OSCQuery and OSC service
         service.createService("_oscjson._tcp.local.", name, oscQueryPort, "")
-        oscServiceHandle = service.createService("_osc._${transport.name.lowercase()}.local.", name, oscPort, "")
+        oscServiceHandle = createOscService()
+    }
+
+    fun createOscService() : ServiceHandle {
+        return service.createService("_osc._${transport.name.lowercase()}.local.", name, oscPort, "")
     }
 
     abstract fun updateOscService(port: UShort)

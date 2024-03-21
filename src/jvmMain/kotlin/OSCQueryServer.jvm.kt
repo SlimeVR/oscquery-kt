@@ -40,7 +40,8 @@ actual class OSCQueryServer actual constructor(
     override fun updateOscService(port: UShort) {
         oscPort = port
         oscServiceHandle?.let { service.removeService(it) }
-        oscServiceHandle = service.createService("_osc._${transport.name.lowercase()}.local.", name, oscPort, "")
+        oscServiceHandle = createOscService()
+        hostInfo = getHostInfo()
     }
 
     private fun Application.main() {
