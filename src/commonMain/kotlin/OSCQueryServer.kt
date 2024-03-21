@@ -13,9 +13,9 @@ abstract class IOSCQueryServer(
 
     val service = OSCQueryService(address, name)
 
-    var hostInfo = getHostInfo()
+    var hostInfo = buildHostInfo()
 
-    fun getHostInfo (): HostInfo {
+    fun buildHostInfo (): HostInfo {
         return HostInfo(
             name = name,
             oscIp = address,

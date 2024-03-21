@@ -41,7 +41,7 @@ actual class OSCQueryServer actual constructor(
         oscPort = port
         oscServiceHandle?.let { service.removeService(it) }
         oscServiceHandle = createOscService()
-        hostInfo = getHostInfo()
+        hostInfo = buildHostInfo()
     }
 
     private fun Application.main() {
