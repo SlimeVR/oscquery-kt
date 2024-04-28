@@ -11,7 +11,7 @@ abstract class IOSCQueryServer(
 ) : AutoCloseable {
     val rootNode = OSCQueryRootNode()
 
-    val service = OSCQueryService(address, name)
+    val service = OSCQueryService(name)
 
     var hostInfo = buildHostInfo()
 

@@ -1,12 +1,21 @@
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
 import javax.jmdns.JmDNS
+import javax.jmdns.JmmDNS
 import javax.jmdns.ServiceEvent
-import javax.jmdns.ServiceInfo as JmDNSServiceInfo
 import javax.jmdns.ServiceListener
+import javax.jmdns.impl.JmmDNSImpl
+import javax.jmdns.ServiceInfo as JmDNSServiceInfo
 
-actual class OSCQueryService actual constructor(address: String, name: String) : AutoCloseable {
-    private val jmDNS: JmDNS = JmDNS.create(InetAddress.getByName(address), name)
+actual class OSCQueryService actual constructor(name: String) : AutoCloseable {
+    init {
+        if(!classDelegateTouched) {
+            setDnsClassDelegate(name)
+            classDelegateTouched = true
+        }
+    }
+
+    private val jmDNS: JmmDNS = JmmDNS.Factory.getInstance()
 
     private val serviceCounter = AtomicLong(0)
     private val serviceHandles = mutableMapOf<Long, JmDNSServiceInfo>()
@@ -33,8 +42,8 @@ actual class OSCQueryService actual constructor(address: String, name: String) :
     ): ServiceListenerHandle {
         val listener = object : ServiceListener {
             override fun serviceAdded(event: ServiceEvent?) {
-                jmDNS.getServiceInfo(event?.type ?: return, event.name)?.let {
-                    onServiceAdded(ServiceInfo(it))
+                jmDNS.getServiceInfos(event?.type ?: return, event.name)?.let { serviceInfos ->
+                    serviceInfos.forEach { onServiceAdded(ServiceInfo(it)) }
                 }
             }
 
@@ -61,6 +70,15 @@ actual class OSCQueryService actual constructor(address: String, name: String) :
 
     override fun close() {
         jmDNS.close()
+    }
+
+    companion object {
+        private var classDelegateTouched = false
+        fun setDnsClassDelegate(name: String) {
+            JmmDNS.Factory.setClassDelegate { object : JmmDNSImpl() {
+                override fun createJmDnsInstance(address: InetAddress?): JmDNS = JmDNS.create(address, name)
+            } }
+        }
     }
 }
 
