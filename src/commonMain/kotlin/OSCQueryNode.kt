@@ -1,3 +1,5 @@
+package dev.slimevr.oscquery
+
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule

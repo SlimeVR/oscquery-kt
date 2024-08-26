@@ -1,3 +1,5 @@
+package dev.slimevr.oscquery
+
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

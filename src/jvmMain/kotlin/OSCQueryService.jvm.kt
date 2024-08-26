@@ -1,3 +1,5 @@
+package dev.slimevr.oscquery
+
 import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicLong
 import javax.jmdns.JmDNS

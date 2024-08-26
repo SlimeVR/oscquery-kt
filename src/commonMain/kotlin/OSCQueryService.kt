@@ -1,3 +1,5 @@
+package dev.slimevr.oscquery
+
 expect class OSCQueryService(name: String) : AutoCloseable {
     fun createService(serviceName: String, name: String, port: UShort, text: String): ServiceHandle
 
